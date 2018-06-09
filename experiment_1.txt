@@ -1,0 +1,66 @@
+
+
+param_grid = {
+	'clf__hidden_layer_sizes': [(10), (50), (100)]
+}
+
+pipe = Pipeline([
+	('vect', CountVectorizer()),
+	('tfidf', TfidfTransformer()),
+	('clf', MLPClassifier(
+		max_iter=10,
+		#solver='lbfgs',
+		#hidden_layer_sizes=(50),
+		verbose=True
+	))
+])
+
+grid = GridSearchCV(pipe,
+	param_grid=param_grid,
+	cv=5,
+	verbose=1,
+	n_jobs=7
+)
+
+
+
+
+>>> ext_clf
+GridSearchCV(cv=5, error_score='raise',
+       estimator=Pipeline(memory=None,
+     steps=[('vect', CountVectorizer(analyzer=u'word', binary=False, decode_error=u'strict',
+        dtype=<type 'numpy.int64'>, encoding=u'utf-8', input=u'content',
+        lowercase=True, max_df=1.0, max_features=None, min_df=1,
+        ngram_range=(1, 1), preprocessor=None, stop_words=None,
+        st...e=True, solver='adam', tol=0.0001, validation_fraction=0.1,
+       verbose=True, warm_start=False))]),
+       fit_params=None, iid=True, n_jobs=7,
+       param_grid={'clf__hidden_layer_sizes': [10, 50, 100]},
+       pre_dispatch='2*n_jobs', refit=True, return_train_score='warn',
+       scoring=None, verbose=1)
+>>> r = ext_clf
+>>> r.best_score_
+0.92840728301219733
+>>> r.best_params_
+{'clf__hidden_layer_sizes': 100}
+>>> 
+>>> twenty_test = fetch_20newsgroups(subset='test', shuffle=True)
+>>> r.score(twenty_test.data, twenty_test.target)
+0.85939989378651094
+>>> predicted = r.predict(twenty_test.data, twenty_test.target)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/kleidl/.local/lib/python2.7/site-packages/sklearn/utils/metaestimators.py", line 115, in <lambda>
+    out = lambda *args, **kwargs: self.fn(obj, *args, **kwargs)
+TypeError: predict() takes exactly 2 arguments (3 given)
+>>> predicted = r.predict(twenty_test.data)
+>>> 
+>>> from sklearn.metrics import accuracy_score, f1_score
+>>> 
+>>> print "Accuracy:", accuracy_score(twenty_test.target, predicted)
+Accuracy: 0.859399893787
+>>> print "Macro F1:", f1_score(twenty_test.target, predicted, average='macro')  
+Macro F1: 0.853599827065
+>>> print "Micro F1:", f1_score(twenty_test.target, predicted, average='micro') 
+Micro F1: 0.859399893787
+>>> 
