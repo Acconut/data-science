@@ -1,6 +1,7 @@
 \documentclass[sigconf]{acmart}
 
 \usepackage{booktabs} % For formal tables
+\usepackage{hyperref}
 
 
 % Copyright
@@ -25,21 +26,12 @@
 \copyrightyear{2018}
 
 \begin{document}
-\title{SIG Proceedings Paper in LaTeX Format}
-\titlenote{Produces the permission block, and
-  copyright information}
-\subtitle{Extended Abstract}
-\subtitlenote{The full version of the author's guide is available as
-  \texttt{acmart.pdf} document}
-
+\title{Hyperparameter Study for Classical Feedforward Neural Networks on Text Data}
 
 \author{Marius Kleidl}
 \affiliation{%
   \institution{University of Passau}
-  \streetaddress{P.O. Box 1212}
-  \city{Dublin}
-  \state{Ohio}
-  \postcode{43017-6221}
+  \city{Passau}
 }
 \email{kleidl01@gw.uni-passau.de}
 
@@ -51,7 +43,7 @@
 \begin{abstract}
 This paper provides a sample of a \LaTeX\ document which conforms,
 somewhat loosely, to the formatting guidelines for
-ACM SIG Proceedings.\footnote{This is an abstract footnote}
+ACM SIG Proceedings.
 \end{abstract}
 
 %
@@ -83,7 +75,50 @@ ACM SIG Proceedings.\footnote{This is an abstract footnote}
 
 \maketitle
 
-Hello
+\section{Introduction}
+
+\section{Data Set}
+
+The experiments are performed in the well-known 20Newsgroups\footnote{\href{http://qwone.com/~jason/20Newsgroups/}{http://qwone.com/$\sim$jason/20Newsgroups/}} data set. It contains 18846 postings which are fairly evenly distributed across 20 different newsgroups, as can be seen in Table~\ref{tab:groups}. Furthermore, the set has been split into a training set of 11314 postings and a testing set of 7532.
+
+TODO: message format 
+
+\begin{table}[]
+	\centering
+	\caption{Postings per newsgroup}
+	\label{tab:groups}
+	\begin{tabular}{ccl}
+		\hline                      %inserts double horizontal lines
+		Newsgroup & Number of postings \\ %[0.5ex]
+		\hline
+rec.motorcycles & 996 & \\
+comp.sys.mac.hardware & 963 & \\
+talk.politics.misc & 775 & \\
+soc.religion.christian & 997 & \\
+comp.graphics & 973 & \\
+sci.med & 990 & \\
+talk.religion.misc & 628 & \\
+comp.windows.x & 988 & \\
+comp.sys.ibm.pc.hardware & 982 & \\
+talk.politics.guns & 910 & \\
+alt.atheism & 799 & \\
+comp.os.ms-windows.misc & 985 & \\
+sci.crypt & 991 & \\
+sci.space & 987 & \\
+misc.forsale & 975 & \\
+rec.sport.hockey & 999 & \\
+rec.sport.baseball & 994 & \\
+sci.electronics & 984 & \\
+rec.autos & 990 & \\
+talk.politics.mideast & 940 &
+	\end{tabular}
+\end{table}
+
+\section{Experiment}
+
+\section{Results}
+
+\section{Conclusion}
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{sample-bibliography}
