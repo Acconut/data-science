@@ -7,35 +7,15 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.datasets import fetch_20newsgroups
-
-
-
-# Stemming Code
-
-# import nltk
-# nltk.download('stopwords')
-
-# from nltk.stem.snowball import SnowballStemmer
-# stemmer = SnowballStemmer("english", ignore_stopwords=True)
-
-# class StemmedCountVectorizer(CountVectorizer):
-#     def build_analyzer(self):
-#         analyzer = super(StemmedCountVectorizer, self).build_analyzer()
-#         return lambda doc: ([stemmer.stem(w) for w in analyzer(doc)])
+from sklearn.model_selection import train_test_split
 
 import numpy as np
 
 #Loading the data set - training data.
-twenty_train = fetch_20newsgroups(subset='train', remove=('headers','footers'), shuffle=True)
-twenty_test = fetch_20newsgroups(subset='test', remove=('headers','footers'), shuffle=True)
+dataset = fetch_20newsgroups(subset='all', remove=('headers','footers'), shuffle=True)
+X_train, X_test, y_train, y_test = train_test_split(dataset.data, dataset.target, test_size=0.20, random_state=0)
+X_train, X_validate, y_train, y_validate = train_test_split(X_train, y_train, test_size=0.20, random_state=0)
 
-print 'Training...'
-
-# In[14]:
-
-# Building a pipeline: We can write less code and do all of the above, by building a pipeline as follows:
-# The names ‘vect’ , ‘tfidf’ and ‘clf’ are arbitrary but will be used later.
-# We will be using the 'text_clf' going forward.
 
 param_grid = {
 	'vect__ngram_range': [(1,1), (1,2), (1,3)],
@@ -44,28 +24,45 @@ param_grid = {
 	#'clf__hidden_layer_sizes': [(50)]#[(10), (50), (100)]
 }
 
-pipe = Pipeline([
-	('vect', CountVectorizer(
-		stop_words='english'
-	)),
-	('tfidf', TfidfTransformer()),
-	('clf', MLPClassifier(
-		#max_iter=10,
-		solver='adam',
-		hidden_layer_sizes=(100),
-		verbose=True,
-		random_state=0,
-		early_stopping=True,
-		tol=0.001
-	))
-])
+results = []
 
-grid = GridSearchCV(pipe,
-	param_grid=param_grid,
-	cv=4,
-	verbose=1,
-	#n_jobs=4
-)
+for ngram_range in [(1,3), (1,1), (1,2)]:
+	for min_df in [1, 3, 5]:
+		print("Training for {} and {}...".format(ngram_range, min_df))
+		pipe = Pipeline([
+			('vect', CountVectorizer(
+				stop_words='english',
+				ngram_range=ngram_range,
+				min_df=min_df
+			)),
+			('tfidf', TfidfTransformer()),
+			('clf', MLPClassifier(
+				#max_iter=10,
+				solver='adam',
+				hidden_layer_sizes=(100),
+				verbose=True,
+				random_state=0,
+				early_stopping=True,
+				tol=0.001,
+			))
+		])
+		classifier = pipe.fit(X_train, y_train)
+		print "Testing ..."
+		score = classifier.score(X_validate, y_validate)
+		predicted = text_clf.predict(X_validate)
+		accuracy =  accuracy_score(twenty_test.target, predicted)
+		macrof1 = f1_score(y_validate, predicted, average='macro')  
+		microf1 = f1_score(y_validate, predicted, average='micro') 
+		results.append({
+			params: (ngram_range, min_df),
+			score: score,
+			accuracy: accuracy,
+			macrof1: macrof1,
+			microf1: microf1
+		})
+		print "Got result:"
+		print results[-1]
+
 
 text_clf = grid.fit(twenty_train.data, twenty_train.target)
 

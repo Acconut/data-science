@@ -1,0 +1,46 @@
+Validation score did not improve more than tol=0.001000 for two consecutive epochs. Stopping.
+>>> grid.best_params_
+{'clf__hidden_layer_sizes': (100, 100), 'clf__alpha': 0.001}
+>>> import pandas as pd
+>>> r = pd.DataFrame(grid.mean_test_score)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'GridSearchCV' object has no attribute 'mean_test_score'
+>>> r = pd.DataFrame(grid.cv_results)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'GridSearchCV' object has no attribute 'cv_results'
+>>> r = pd.DataFrame(grid.cv_results_)
+/home/kleidl/.local/lib/python2.7/site-packages/sklearn/utils/deprecation.py:122: FutureWarning: You are accessing a training score ('mean_train_score'), which will not be available by default any more in 0.21. If you need training scores, please set return_train_score=True
+  warnings.warn(*warn_args, **warn_kwargs)
+/home/kleidl/.local/lib/python2.7/site-packages/sklearn/utils/deprecation.py:122: FutureWarning: You are accessing a training score ('split0_train_score'), which will not be available by default any more in 0.21. If you need training scores, please set return_train_score=True
+  warnings.warn(*warn_args, **warn_kwargs)
+/home/kleidl/.local/lib/python2.7/site-packages/sklearn/utils/deprecation.py:122: FutureWarning: You are accessing a training score ('split1_train_score'), which will not be available by default any more in 0.21. If you need training scores, please set return_train_score=True
+  warnings.warn(*warn_args, **warn_kwargs)
+/home/kleidl/.local/lib/python2.7/site-packages/sklearn/utils/deprecation.py:122: FutureWarning: You are accessing a training score ('split2_train_score'), which will not be available by default any more in 0.21. If you need training scores, please set return_train_score=True
+  warnings.warn(*warn_args, **warn_kwargs)
+/home/kleidl/.local/lib/python2.7/site-packages/sklearn/utils/deprecation.py:122: FutureWarning: You are accessing a training score ('split3_train_score'), which will not be available by default any more in 0.21. If you need training scores, please set return_train_score=True
+  warnings.warn(*warn_args, **warn_kwargs)
+/home/kleidl/.local/lib/python2.7/site-packages/sklearn/utils/deprecation.py:122: FutureWarning: You are accessing a training score ('std_train_score'), which will not be available by default any more in 0.21. If you need training scores, please set return_train_score=True
+  warnings.warn(*warn_args, **warn_kwargs)
+>>> scores = np.array(r.mean_test_score)
+>>> scores
+array([0.85831713, 0.87696659, 0.87670143, 0.87572919])
+>>> print "Best cross-validation accuracy", grid.best_score_
+Best cross-validation accuracy 0.8769665900654057
+>>> print "Test best score", grid.score(twenty_test.data, twenty_test.target)
+Test best score 0.8011152416356877
+>>> print "Best parameters", grid.best_params_
+Best parameters {'clf__hidden_layer_sizes': (100, 100), 'clf__alpha': 0.001}
+>>> 
+>>> # In[15]:
+... 
+>>> # Performance of NB Classifier
+... predicted = text_clf.predict(twenty_test.data)
+>>> print "Accuracy:", accuracy_score(twenty_test.target, predicted)
+Accuracy: 0.8011152416356877
+>>> print "Macro F1:", f1_score(twenty_test.target, predicted, average='macro')  
+Macro F1: 0.793841358131259
+>>> print "Micro F1:", f1_score(twenty_test.target, predicted, average='micro') 
+Micro F1: 0.8011152416356877
+>>> 
