@@ -23,8 +23,8 @@ print 'Training...'
 # We will be using the 'text_clf' going forward.
 
 param_grid = {
-	'clf__hidden_layer_sizes': [(50), (100)],#, (50, 50), (100, 100)],
-	'clf__alpha': [1.e-01, 1.e-03, 1.e-05, 1.e-07]
+	'clf__hidden_layer_sizes': [(50), (100), (50, 50), (100, 100)],
+	'clf__learning_rate_init': [1, 0.1, 0.01, 0.001, 0.0001]
 }
 
 pipe = Pipeline([
