@@ -123,7 +123,7 @@ Albany, NY 12222
 			\end{lstlisting}
 		\end{tabular}
 	\end{center}
-	\caption{Postings example from the comp.os.ms-windows.misc newsgroup}
+	\caption{Posting example from the comp.os.ms-windows.misc newsgroup}
 \end{figure*}
 
 \begin{table}[]
@@ -173,7 +173,9 @@ Each neural network is trained until its accuracy stops to increase noticeably. 
 
 The classifier's performance is measured using its mean accuracy. This is done by calculating the mean of the classifier's accuracy for each label.
 
-In order to avoid that a classifier 
+In order to find the best combination of hidden layers and learning rate, we perform a grid search where for each combination of these parameters a classifier is trained and evaluated using the mean accuracy. As mentioned above, our learning rate is one of 1, 0.1, 0.001 and 0.0001 while number of layers is one or two with 50 or 100 perceptrons per layer. In total we train and evaluate the performance of 20 neural networks.
+
+To further ensure that we do not overfit our model on our test data set, we are using 4-folded cross validation. In this method, the training set for a classifier will be split into four distinct folds. Next, four classifiers will be trained using three of the four distinct folds and one fold will be used for validation. For each classifier the validation set will be a different one. Finally, the mean accuracies of the fours classifiers is calculated which is then used as the accuracy for the entire classifier\cite{introduction_ml}.
 
 \section{Results}
 
