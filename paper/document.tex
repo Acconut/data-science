@@ -43,9 +43,7 @@
 
 
 \begin{abstract}
-This paper provides a sample of a \LaTeX\ document which conforms,
-somewhat loosely, to the formatting guidelines for
-ACM SIG Proceedings.
+	In this paper we train and evaluate the accuracy of text classifiers using simple feed-forward neural networks with different learning rates, number of hidden layers and numbers of perceptrons per layer. Our results show that different values for these hyperparameters influence the classifier's accuracy while their impact on the performance is limited . We conclude that better text preprocessing and feature selection may be necessary to further improve the classifier.
 \end{abstract}
 
 %
@@ -53,7 +51,7 @@ ACM SIG Proceedings.
 % http://dl.acm.org/ccs.cfm
 % Please copy and paste the code instead of the example below.
 %
- \begin{CCSXML}
+\begin{CCSXML}
 	<ccs2012>
 	<concept>
 	<concept_id>10010147.10010257.10010258.10010259.10010263</concept_id>
@@ -71,22 +69,21 @@ ACM SIG Proceedings.
 \ccsdesc[500]{Computing methodologies~Supervised learning by classification}
 \ccsdesc[500]{Computing methodologies~Neural networks}
 
-
+% TODO
 \keywords{ACM proceedings, \LaTeX, text tagging}
-
 
 \maketitle
 
 \section{Introduction}
 
-In Natural Language Processing application 
+In Natural Language Processing application the task of classifying text is an common one and is widely used in areas such as sentiment analysis, recommendation engines and content filtering. Neural networks have received increasing attention for solving these complex problems. 
 
 \section{Contribution}
 
 In our experiment we train and evaluate the performance of multiple deep neural networks with different numbers of layers, numbers of neurons per layer and different learning rates.
 This section describes the setup of our experiment, in particular the data set, the chosen feature extraction steps, the hyperparameters for our neural network and our evaluation method. The experiment is conducted using the machine learning software scikit-learn\cite{scikit-learn} in its version 0.19.1.
 
-\subsection{Data Set}
+\subsection{Text Data Set}
 
 The experiments are performed using the well-known 20Newsgroups\footnote{\href{http://qwone.com/~jason/20Newsgroups/}{http://qwone.com/$\sim$jason/20Newsgroups/}} data set. It contains 18846 postings in the English language which are nearly evenly distributed across 20 different newsgroups, as can be seen in Table~\ref{tab:groups}. Furthermore, the set has been split into a training set of 11314 postings and a testing set of 7532. This division is based upon the time of the posting\cite{sklearn-newsgroup}.
 
@@ -157,13 +154,15 @@ Albany, NY 12222
 	\end{tabular}
 \end{table}
 
-\subsection{Feature Extraction}
+\subsection{Feature Extraction of Text Data}
 
 Since raw sequences of characters cannot be processed by neural networks, we need to represent our data in vector of fixed sizes. In order to achieve this, the text has been converted into the commonly used bag-of-words model after removing English stop words, such as "the" and "is". Our model only contains single words and not pair of words used next to each others\footnote{These pairs of words are commonly knows as bigrams and are used to keep information about the structure of sentences.}. Furthermore, the model does not discard words depending on their appearance of frequency. Every word used in the text is contained in the model, even if it only appears once.
 
+TODO: example
+
 Next, we normalize the entries in our bag-of-words representation. For classification words with a higher frequency of occurrence are usually less informative than specialized words which are more rarely used. Therefore, if we would use the frequency of occurrence for rating a word's importance, we will assign more specialized words a less important impact. This low rating causes that specialized words are considered as of less importance than general words, even though it's the opposite. To avoid this, we need to avoid that word's importance is based on its frequency of occurrence. This can be achieved by rating a word's impact based on its term frequency-inverse document frequency (TFIDF). Using this normalization, words with a high frequency will by considered of less importance.
 
-\subsection{Deep Neural Network}
+\subsection{Deep Neural Network for Classification}
 
 Our neural networks contains one or two hidden feed-forward layers consisting of 50 or 100 perceptrons. The learning rate is 1, 0.1, 0.001 or 0.0001. For the activation function we choose the rectified linear unit function (ReLu) as defined by $f(x) = max(0, x)$. This decision was based on previous work which showed the ReLu is able to provide better classification accuracy in supervised training than the hyperbolic tan function or the the logistic sigmoid function\cite{pmlr-v15-glorot11a}. The loss-function is optimized using the stochastic gradient descent optimizer Adam as proposed by Kingma, Diederik, and Jimmy Ba \cite{adam}. The L2 penalty paramter $alpha$ for regularization has been set to 0.0001.
 
