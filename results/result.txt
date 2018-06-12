@@ -59,3 +59,27 @@ array([[0.28539862, 0.85884745, 0.88713099, 0.88518649, 0.86512286],
        [0.36211773, 0.85009722, 0.88721937, 0.89075482, 0.87590596],
        [0.06080962, 0.8020152 , 0.86096871, 0.87316599, 0.86335514],
        [0.05683224, 0.80537387, 0.87095634, 0.87776206, 0.87493371]])
+
+>>> 
+>>> print 'Done!'
+Done!
+>>> 
+>>> print "Best cross-validation accuracy", grid.best_score_
+Best cross-validation accuracy 0.8907548170408344
+>>> print "Test best score", grid.score(twenty_test.data, twenty_test.target)
+Test best score 0.8154540626659585
+>>> print "Best parameters", grid.best_params_
+Best parameters {'clf__hidden_layer_sizes': 100, 'clf__learning_rate_init': 0.001}
+>>> 
+>>> # In[15]:
+... 
+>>> # Performance of NB Classifier
+... predicted = text_clf.predict(twenty_test.data)
+>>> print "Accuracy:", accuracy_score(twenty_test.target, predicted)
+Accuracy: 0.8154540626659585
+>>> print "Macro F1:", f1_score(twenty_test.target, predicted, average='macro')  
+Macro F1: 0.8080134525061737
+>>> print "Micro F1:", f1_score(twenty_test.target, predicted, average='micro') 
+Micro F1: 0.8154540626659585
+>>> 
+
