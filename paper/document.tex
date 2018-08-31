@@ -38,7 +38,7 @@
 \email{kleidl01@gw.uni-passau.de}
 
 \begin{abstract}
-	In this paper we train and evaluate the accuracy of text classifiers using simple feed-forward neural networks with different learning rates, numbers of hidden layers and numbers of perceptrons per layer. Our results show that different values for these hyperparameters influence the classifier's accuracy while their impact on the performance is limited. We conclude that better text preprocessing and feature selection steps may be necessary to further improve the classifier.
+	In this paper we train and evaluate the accuracy of text classifiers using simple feed-forward neural networks with different learning rates, numbers of hidden layers and numbers of perceptrons per layer. Our results show that different values for these hyperparameters influence the classifier's accuracy while their impact on the performance is limited. We conclude that better text preprocessing and feature selection steps may be necessary to further improve the classifier. As we choose general-purpose hyperparameters for the experiment, the impact of this paper should not be neglected, even if the results are not comparable with state-of-the-art techniques.
 \end{abstract}
 
 %
@@ -70,9 +70,24 @@
 
 \section{Introduction}
 
-In Natural Language Processing applications the task of classifying text is an common one and is widely used in areas such as sentiment analysis, recommendation engines and content filtering. Neural networks have received increasing attention for solving these complex problems and have achieve impressive results. However, as with any machine learning application it is necessary to properly adjust the network's hyperparameters to the specific use case and its data set. This optimization process can be a though challenge which is often solved by simple trial and error.
+In Natural Language Processing applications the task of classifying text is a common one and is widely used in areas such as sentiment analysis, recommendation engines and content filtering. Neural networks have received increasing attention for solving these complex problems and have achieve impressive results. However, as with any machine learning application it is necessary to properly adjust the network's hyperparameters to the specific use case and its data set. This optimization process can be a though challenge which is often solved by simple trial and error.
 
-In our contribution we provide an experiment showing the challenge of this process. We train a feed-forward neural network on text classification using different hidden layers and learning rates. After in in-depth description of our experiment, we present the results and discuss the limited impact of the two chosen hyperparameters on the classifier's accuracy. 
+In our contribution we provide an experiment showing the challenge of this process. We train a feed-forward neural network on text classification using different hidden layers and learning rates. After in in-depth description of our experiment, we present the results and discuss the limited impact of the two chosen hyperparameters on the classifier's accuracy.
+
+Even if our results are not comparable to the ones of other state-of-the-art approaches, the impact of this paper should not be neglected as it forms an important foundations for further optimizations of the network.
+
+\section{Background}
+
+Feed-forward neural networks consist of multiple layers. Each layer contains a varying number of perceptrons where each perceptron is connected to all perceptrons of the next layer\cite{nielsenneural}. As Figure~\ref{fig:layers} shows, a network consists of a single input layer, one or mode hidden layers and again one output layer. In feed-forward neural networks, signals will only travel in one direction, flowing from one layer to the next layer, as illustrated by the arrows in Figure~\ref{fig:layers}. Furthermore, only direct connections to the next layers are allowed, preventing circles from existing as done in recurrent neural networks. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=8cm]{layers.png}
+	\caption{Layout of a feed-forward neural network with one input layer, two hidden layers and a single output layer. Each layer has a different number of perceptrons. Source: \href{http://neuralnetworksanddeeplearning.com/chap1.html}{http://neuralnetworksanddeeplearning.com/}}
+	\label{fig:layers}
+\end{figure}
+
+Text classification is the process of assigning a class to a provided text phrase. In this paper we will focus on multi-class classification meaning that the classifier has to chose between more than two classes\footnote{In contrast, if only two classes are provided, it's called binary classification.}. In our data set 20 classes are available, as will be described in section \ref{text-data-set}. Furthermore, only one class will be assigned to a text phrase in our experiment.
 
 \section{Contribution}
 
@@ -80,10 +95,11 @@ In our experiment we train and evaluate the performance of multiple deep neural 
 This section describes the setup of our experiment, in particular the data set, the chosen feature extraction steps, the hyperparameters for our neural network and our evaluation method. The experiment is conducted using the machine learning software scikit-learn\cite{scikit-learn} in its version 0.19.1.
 
 \subsection{Text Data Set}
+\label{text-data-set}
 
 The experiments are performed using the well-known 20Newsgroups\footnote{\href{http://qwone.com/~jason/20Newsgroups/}{http://qwone.com/$\sim$jason/20Newsgroups/}} data set. It contains 18846 postings in the English language which are nearly evenly distributed across 20 different newsgroups, as can be seen in Table~\ref{tab:groups}. Furthermore, the set has been split into a training set of 11314 posts and a testing set of 7532 posts. Posts have been put into one of the two sets based on whether they have been created before or after a specific date\cite{sklearn-newsgroup}.
 
-An example for a post's format is given in Figure~\ref{fig:post}. As one can see, the post contains a header and a signature section consisting of additional meta data, such as the sender's e-mail address and organization. To prevent our neural network from association this meta data with specific classes, we remove the headers and signatures from each post.
+An example for a post's format is given in Figure~\ref{fig:post}. As one can see, the post contains a header and a signature section consisting of additional meta data, such as the sender's e-mail address and organization. To prevent our neural network from associating this meta data with specific classes, we remove the headers and signatures from each post.
 
 \begin{figure*}
 	\begin{center}
@@ -154,15 +170,15 @@ Albany, NY 12222
 
 Since raw sequences of characters cannot be processed by neural networks, we need to represent our data in vectors of fixed size. In order to achieve this, the text has been converted into the commonly used bag-of-words model after removing English stop words, such as "the" and "is". Our model only contains single words and not pairs of words\footnote{These pairs of words are commonly known as bigrams and are used to keep information about the structure of sentences.}. Furthermore, the model does not discard words depending on their frequency of occurrence. Every word used in the text is included in the model, even if it only appears once.
 
-% TODO: example
+Next, we normalize the entries in our bag-of-words representation. For classification words with a higher frequency of occurrence are usually less informative than specialized words which are more rarely used. For example, from the word "time" we cannot infer a possible topic since it can be used in a variety of contexts. On the other hand, the specialized word "alternator" is rarely used but if so, it may likely be in the context of automobiles.
 
-Next, we normalize the entries in our bag-of-words representation. For classification words with a higher frequency of occurrence are usually less informative than specialized words which are more rarely used. Therefore, if we would use the frequency of occurrence for rating a word's importance, we will assign more specialized words a less important impact. This low rating causes that specialized words are considered as of less importance than general words, even though it's the opposite. To avoid this, we need to prevent that a word's importance is based on its frequency of occurrence. This can be achieved by rating a word's impact based on its term frequency-inverse document frequency (TFIDF). Using this normalization, words with a high frequency will by considered of less importance.
+Therefore, if we would use the frequency of occurrence for rating a word's importance, we will assign more specialized words a less important impact. This low rating causes that specialized words are considered as of less importance than general words, even though it's the opposite. To avoid this, we need to prevent that a word's importance is based on its frequency of occurrence. This can be achieved by rating a word's impact based on its term frequency-inverse document frequency (TFIDF). Using this normalization, words with a high frequency will by considered of less importance.
 
 \subsection{Deep Neural Network for Classification}
 
-Our neural networks contain one or two hidden feed-forward layers consisting of 50 or 100 perceptrons. The learning rate is 1, 0.1, 0.01, 0.001 or 0.0001. For the activation function we choose the rectified linear unit function (ReLu) as defined by $f(x) = max(0, x)$. This decision was based on previous work which showed the ReLu is able to provide better classification accuracy in supervised training than the hyperbolic tan function or the the logistic sigmoid function\cite{pmlr-v15-glorot11a}. The loss-function is optimized using the stochastic gradient descent optimizer Adam as proposed by Kingma, Diederik, and Jimmy Ba\cite{adam}. The L2 penalty parameter $alpha$ for regularization has been set to 0.0001.
+Our neural networks contain one or two hidden feed-forward layers consisting of 50 or 100 perceptrons. The learning rate is 1, 0.1, 0.01, 0.001 or 0.0001. For the activation function we choose the rectified linear unit function (ReLu) as defined by $f(x) = max(0, x)$. This decision was based on previous work which showed that the ReLu is able to provide better classification accuracy in supervised training than the hyperbolic tan function or the the logistic sigmoid function\cite{pmlr-v15-glorot11a}. The loss-function is optimized using the stochastic gradient descent optimizer Adam as proposed by Kingma, Diederik, and Jimmy Ba\cite{adam}. The L2 penalty parameter $alpha$ for regularization has been set to 0.0001.
 
-Each neural network is trained until its accuracy stops to increase noticeably. For this purpose, 10\% of the training set will be split apart as a validation set. After each training iteration using the remaining 90\% the network's performance will be evaluated using the validation set. If the mean accuracy across all classes does not improve more than 0.1 percentage point for two iterations, the training will be stopped. 
+Each neural network is trained until its accuracy stops to increase noticeably. For this purpose, 10\% of the training set will be randomly split apart as a validation set. After each training iteration using the remaining 90\% the network's performance will be evaluated using the validation set. If the mean accuracy across all classes does not improve more than 0.1 percentage point for two iterations, the training will be stopped. 
 
 \subsection{Evaluation}
 
@@ -193,14 +209,22 @@ Furthermore, Figure~\ref{fig:heatmap} reveals that the classifiers using one hid
 A more significant difference can be seen when looking at the neural networks with multiple hidden layers. There, the neural network with two hidden layers of 50 perceptrons and a learning rate of 0.1 achieve only a mean accuracy of 80.2\%.
 Also notably, the neural networks with a learning rate of 1 achieved a maximum mean accuracy of 36.2\%, which is expect as such a high value hinders the optimization of the loss function.
 
-\section{Conclusion}
+\section{Discussion}
 
-From the data presented in Figure~\ref{fig:heatmap}, it is obvious that the choice of hidden layers and learning rate make a significant impact on the classifier's accuracy. However, we also see that the impact is limited. 
-Adding more hidden layers or further decreasing the learning rate will likely not result in a better classifier as the trend in Figure~\ref{fig:heatmap} shows: Moving towards the edge of the matrix reduces the accuracy noticeably. By only optimizing these two hyperparameters we are not able to reach the performance of other text classifiers. For example, other network architectures such as Recurrent Convolutional Neural Networks were able to achieve accuracies of up to 96.5\%\cite{rcnn}.
+From the data presented in Figure~\ref{fig:heatmap}, we can see that the choice of hidden layers and learning rate make a significant impact on the classifier's accuracy. For example, let's compare two neural networks: On one hand, the neural network consisting of two layers of 50 perceptrons and trained with a learning rate of 0.1 resulted in an accuracy of 80.2\%. On the other hand, the neural network consisting of one layer of 100 perceptrons and trained with a learning rate of 0.001 resulted in an accuracy of 89.1\%. The difference in their accuracies is 8.9 percentage point which is a significant number.
+However, we also see that the impact is limited: Adding more hidden layers or further decreasing the learning rate will likely not result in a better classifier. In fact the trend in Figure~\ref{fig:heatmap} shows that moving towards the edge of the matrix reduces the accuracy noticeably. By only optimizing these two hyperparameters we are not able to achive accuracy above 90\% and are not able to reach the performance of other text classifiers. For example, other network architectures such as Recurrent Convolutional Neural Networks were able to achieve accuracies of up to 96.5\%\cite{rcnn}.
 
 In order to obtain higher accuracy using feed-forward neural networks it is probably necessary to not only optimize the neural networks' hyperparameters but also apply other text preprocessing and feature extraction mechanisms. One of these approaches may be stemming\footnote{Stemming is the act of reducing words to their root form. For example, the words "fishing" and "fisher" would be transformed into "fish".} which has been successfully used to produce better predictions\cite{stemming}. Another possibility would be the use of bigrams or even trigrams in the bag-of-words representation. In section \ref{sec:feature} we limited the entries in our bag-of-words to only single words and excluded bigrams intentionally.
 
-Finally, we can conclude that when dealing with text data, one has to take additional care of adjusting the neural network but also tuning the text processing to the specific data set.
+\section{Conclusion}
+
+In this experiment we evaluated the accuracy of multiple feed-forward neural networks for classifying text data when using different learning rates, numbers of hidden layers and numbers of perceptrons per layer for training. The results showed that we need to consider these hyperparameters when designing neural networks. On the other hand, we also saw that it not enough to optimize these values if one wants to achieve the best performance.
+
+This paper only focused on general-purpose hyperparameters which are must be considered when building a neural network for any application. Therefore, we did not consider the effects of specific hyperparameters for the domain of text classification, such as different text preprocessing and feature extraction steps. Further research should be conducted to study what impact these methods have on the accuracy of a neural-network-based text classifier.
+
+Another possible topic of research is whether the results of this paper can be reproduced when classification is applied to other domains, such as on image or audio data.
+
+Finally, we can conclude that when dealing with text data, one has to take additional care of adjusting the neural network but also tuning the text processing to the specific data set. We can say that finding good values for the number of layers, the number of perceptrons per layer and the learning rate is a solid foundation for further domain-specific optimizations.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{document}
