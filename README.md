@@ -1,6 +1,6 @@
 # Introduction
 
-This repository contains the code for the experiment associated with the topic "Hyperparameter Study for Classical Feed-forward Neural Networks on Text Data".
+This repository contains the code for the paper and experiment associated with the topic "Hyperparameter Study for Classical Feed-forward Neural Networks on Text Data".
 
 # Installation
 

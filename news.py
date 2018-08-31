@@ -55,7 +55,7 @@ print 'Done!'
 print "Best cross-validation accuracy", grid.best_score_
 print "Best parameters", grid.best_params_
 
-results = pd.DataFrame(grid_search.cv_results_)
+results = pd.DataFrame(grid.cv_results_)
 scores = np.array(results.mean_test_score).reshape(4, 5)
 print "Scores for all parameters", scores
 
